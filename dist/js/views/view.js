@@ -3,6 +3,7 @@ export class View {
         this.elemento = document.querySelector(seletor);
     }
     update(model) {
-        this.elemento;
+        this.elemento.innerHTML = this.template(model);
     }
+    ;
 }
