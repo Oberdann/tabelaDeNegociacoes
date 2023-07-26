@@ -8,6 +8,7 @@ export class NegociacaoController {
         this.negociacoes = new Negociacoes();
         this.negociacosView = new NegociacoesView('#negociacoesViews');
         this.mensagemView = new MensagemView('#mensagemView');
+        this.mensagemDeErro = 'Negociações são feitas apenas entre os dias: segunda-feira e sexta-feiras.';
         this.inputData = document.querySelector('#data');
         this.inputQuantidade = document.querySelector('#quantidade');
         this.inputValor = document.querySelector('#valor');
@@ -15,10 +16,10 @@ export class NegociacaoController {
     // Methods
     adiciona() {
         const negociacao = this.criaNegociacao();
+        if (!this.verificaDiaDaSemana(negociacao))
+            return this.mensagemView.update(this.mensagemDeErro);
         this.negociacoes.adicionaNoArray(negociacao);
-        console.log(this.negociacoes.lista());
-        this.negociacosView.update(this.negociacoes);
-        this.mensagemView.update('Negociação adicionada com sucesso');
+        this.atualizaView();
         this.limparFormulario();
     }
     ;
@@ -37,4 +38,11 @@ export class NegociacaoController {
         this.inputData.focus();
     }
     ;
+    atualizaView() {
+        this.negociacosView.update(this.negociacoes);
+        this.mensagemView.update('Negociação adicionada com sucesso');
+    }
+    verificaDiaDaSemana(negociacao) {
+        return negociacao.data.getDay() > 0 && negociacao.data.getDay() < 6 ? true : false;
+    }
 }
