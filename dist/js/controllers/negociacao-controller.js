@@ -3,31 +3,22 @@ import { Negociacoes } from "../models/negociacoes.js";
 import { MensagemView } from "../views/mensagem-views.js";
 import { NegociacoesView } from "../views/negociacoes-view.js";
 export class NegociacaoController {
-    // Constructors
     constructor() {
         this.negociacoes = new Negociacoes();
-        this.negociacosView = new NegociacoesView('#negociacoesViews');
+        this.negociacosView = new NegociacoesView('#negociacoesViews', true);
         this.mensagemView = new MensagemView('#mensagemView');
         this.mensagemDeErro = 'Negociações são feitas apenas entre os dias: segunda-feira e sexta-feiras.';
         this.inputData = document.querySelector('#data');
         this.inputQuantidade = document.querySelector('#quantidade');
         this.inputValor = document.querySelector('#valor');
     }
-    // Methods
     adiciona() {
-        const negociacao = this.criaNegociacao();
+        const negociacao = Negociacao.criaDe(this.inputData.value, this.inputQuantidade.value, this.inputValor.value);
         if (!this.verificaDiaDaSemana(negociacao))
             return this.mensagemView.update(this.mensagemDeErro);
         this.negociacoes.adicionaNoArray(negociacao);
         this.atualizaView();
         this.limparFormulario();
-    }
-    ;
-    criaNegociacao() {
-        const data = new Date(this.inputData.value.replace(/-/g, ','));
-        const quantidade = Number(this.inputQuantidade.value);
-        const valor = Number(this.inputValor.value);
-        return new Negociacao(data, quantidade, valor);
     }
     ;
     limparFormulario() {
