@@ -1,3 +1,4 @@
+import {logarTempoDeExecucao} from "../decorators/logar-tem-de-execucao.js";
 import { Negociacao } from "../models/negociacao.js";
 import { Negociacoes } from "../models/negociacoes.js";
 import { MensagemView } from "../views/mensagem-views.js";
@@ -20,16 +21,18 @@ export class NegociacaoController {
     }
 
     // Methods
+    @logarTempoDeExecucao()
     public adiciona(): void {
         const negociacao = Negociacao.criaDe(
             this.inputData.value,
             this.inputQuantidade.value,
             this.inputValor.value
         )
-        if (!this.verificaDiaDaSemana(negociacao)) return this.mensagemView.update(this.mensagemDeErro);
+        if(this.checaErroDiaUtil(negociacao)) return;
         this.negociacoes.adicionaNoArray(negociacao);
         this.atualizaView();
         this.limparFormulario();
+
     };
 
     private limparFormulario(): void {
@@ -47,5 +50,16 @@ export class NegociacaoController {
 
     private verificaDiaDaSemana(negociacao: Negociacao) {
         return negociacao.data.getDay() > 0 && negociacao.data.getDay() < 6 ? true : false;
+    }
+
+    private checaErroDiaUtil(negociacao: Negociacao): boolean {
+        let validDay: boolean = this.verificaDiaDaSemana(negociacao)
+        let valid: boolean = false
+        if (!(validDay)) {
+            this.mensagemView.update(this.mensagemDeErro);
+            this.limparFormulario();
+            valid = true
+        }
+        return valid;
     }
 }
